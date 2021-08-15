@@ -1,36 +1,16 @@
 {
-    "name": "openapi-typescript-codegen",
+    "name": "@slutskys/openapi-typescript-codegen",
     "version": "0.9.3",
     "description": "Library that generates Typescript clients based on the OpenAPI specification.",
-    "author": "Ferdi Koomen",
-    "homepage": "https://github.com/ferdikoomen/openapi-typescript-codegen",
+    "author": "Quentin Fox",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/ferdikoomen/openapi-typescript-codegen.git"
-    },
-    "bugs": {
-        "url": "https://github.com/ferdikoomen/openapi-typescript-codegen/issues"
+        "url": "git+https://github.com/slutskys/openapi-typescript-codegen.git"
     },
     "license": "MIT",
-    "keywords": [
-        "openapi",
-        "swagger",
-        "codegen",
-        "generator",
-        "client",
-        "typescript",
-        "yaml",
-        "json",
-        "fetch",
-        "xhr",
-        "node"
-    ],
-    "maintainers": [
-        {
-            "name": "Ferdi Koomen",
-            "email": "info@madebyferdi.com"
-        }
-    ],
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com"
+    },
     "main": "dist/index.js",
     "module": "dist/index.js",
     "types": "types/index.d.ts",
