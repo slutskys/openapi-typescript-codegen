@@ -33,6 +33,7 @@ export { ${{{name}}} } from './schemas/${{{name}}}';
 
 {{#each services}}
 export { {{{name}}} } from './services/{{{name}}}';
+export type { I{{{name}}} } from './services/{{{name}}}';
 {{/each}}
 {{/if}}
 {{/if}}
