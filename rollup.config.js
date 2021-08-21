@@ -73,6 +73,7 @@ module.exports = {
         'http',
         'https',
         'handlebars/runtime',
+        'prettier',
         ...external,
     ],
     plugins: getPlugins(),
