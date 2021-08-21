@@ -9,9 +9,9 @@ import { request as __request } from '../core/request';
 {{#if @root.useVersion}}
 import { OpenAPI } from '../core/OpenAPI';
 {{/if}}
+import type { Fetch } from '../fetch';
 
 export class {{{name}}} {
-
     {{#each operations}}
     /**
     {{#if deprecated}}
@@ -35,7 +35,7 @@ export class {{{name}}} {
     {{/each}}
      * @throws ApiError
      */
-    public static async {{{name}}}({{>parameters}}): Promise<{{>result}}> {
+    public static async {{{name}}}({{>parameters}}fetch?: Fetch): Promise<{{>result}}> {
         const result = await __request({
             method: '{{{method}}}',
             path: `{{{path}}}`,
@@ -83,6 +83,7 @@ export class {{{name}}} {
                 {{/each}}
             },
             {{/if}}
+            fetch
         });
         return result.body;
     }
@@ -91,8 +92,7 @@ export class {{{name}}} {
 }
 
 export interface I{{{name}}} {
-
     {{#each operations}}
-        {{{name}}}({{>parameters}}): Promise<{{>result}}>;
+        {{{name}}}({{>parameters}}fetch?: Fetch): Promise<{{>result}}>;
     {{/each}}
 }
