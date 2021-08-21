@@ -43,4 +43,5 @@ export async function writeClientIndex(
             services: sortServicesByName(client.services),
         })
     );
+    await writeFile(resolve(outputPath, 'fetch.ts'), templates.fetch({}));
 }

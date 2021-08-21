@@ -1,0 +1,5 @@
+{{>header}}
+
+export interface Fetch {
+  (input: RequestInfo, init?: RequestInit | undefined): Promise<Response>
+}
