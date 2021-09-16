@@ -1,6 +1,6 @@
 {
     "name": "@slutskys/openapi-typescript-codegen",
-    "version": "0.9.6",
+    "version": "0.9.7",
     "description": "Library that generates Typescript clients based on the OpenAPI specification.",
     "author": "Quentin Fox",
     "repository": {
