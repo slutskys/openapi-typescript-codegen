@@ -3,35 +3,37 @@ import type { OperationParameters } from '../../../client/interfaces/OperationPa
 import type { OpenApi } from '../interfaces/OpenApi';
 import type { OpenApiOperation } from '../interfaces/OpenApiOperation';
 import type { OpenApiRequestBody } from '../interfaces/OpenApiRequestBody';
-import { getComment } from './getComment';
 import { getOperationErrors } from './getOperationErrors';
 import { getOperationName } from './getOperationName';
 import { getOperationParameters } from './getOperationParameters';
-import { getOperationPath } from './getOperationPath';
 import { getOperationRequestBody } from './getOperationRequestBody';
 import { getOperationResponseHeader } from './getOperationResponseHeader';
 import { getOperationResponses } from './getOperationResponses';
 import { getOperationResults } from './getOperationResults';
 import { getRef } from './getRef';
-import { getServiceClassName } from './getServiceClassName';
+import { getServiceName } from './getServiceName';
 import { sortByRequired } from './sortByRequired';
 
-export function getOperation(openApi: OpenApi, url: string, method: string, op: OpenApiOperation, pathParams: OperationParameters): Operation {
-    const serviceName = op.tags?.[0] || 'Service';
-    const serviceClassName = getServiceClassName(serviceName);
-    const operationNameFallback = `${method}${serviceClassName}`;
-    const operationName = getOperationName(op.operationId || operationNameFallback);
-    const operationPath = getOperationPath(url);
+export const getOperation = (
+    openApi: OpenApi,
+    url: string,
+    method: string,
+    tag: string,
+    op: OpenApiOperation,
+    pathParams: OperationParameters
+): Operation => {
+    const serviceName = getServiceName(tag);
+    const operationName = getOperationName(url, method, op.operationId);
 
     // Create a new operation object for this method.
     const operation: Operation = {
-        service: serviceClassName,
+        service: serviceName,
         name: operationName,
-        summary: getComment(op.summary),
-        description: getComment(op.description),
+        summary: op.summary || null,
+        description: op.description || null,
         deprecated: op.deprecated === true,
         method: method.toUpperCase(),
-        path: operationPath,
+        path: url,
         parameters: [...pathParams.parameters],
         parametersPath: [...pathParams.parametersPath],
         parametersQuery: [...pathParams.parametersQuery],
@@ -58,13 +60,11 @@ export function getOperation(openApi: OpenApi, url: string, method: string, op: 
         operation.parametersBody = parameters.parametersBody;
     }
 
-    // TODO: form data goes wrong here: https://github.com/ferdikoomen/openapi-typescript-codegen/issues/257§
     if (op.requestBody) {
         const requestBodyDef = getRef<OpenApiRequestBody>(openApi, op.requestBody);
         const requestBody = getOperationRequestBody(openApi, requestBodyDef);
         operation.imports.push(...requestBody.imports);
         operation.parameters.push(requestBody);
-        operation.parameters = operation.parameters.sort(sortByRequired);
         operation.parametersBody = requestBody;
     }
 
@@ -81,5 +81,7 @@ export function getOperation(openApi: OpenApi, url: string, method: string, op: 
         });
     }
 
+    operation.parameters = operation.parameters.sort(sortByRequired);
+
     return operation;
-}
+};

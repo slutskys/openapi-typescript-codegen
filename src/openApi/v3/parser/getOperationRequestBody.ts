@@ -2,28 +2,26 @@ import type { OperationParameter } from '../../../client/interfaces/OperationPar
 import { getPattern } from '../../../utils/getPattern';
 import type { OpenApi } from '../interfaces/OpenApi';
 import type { OpenApiRequestBody } from '../interfaces/OpenApiRequestBody';
-import { getComment } from './getComment';
 import { getContent } from './getContent';
-import { getMediaType } from './getMediaType';
 import { getModel } from './getModel';
 import { getType } from './getType';
 
-export function getOperationRequestBody(openApi: OpenApi, parameter: OpenApiRequestBody): OperationParameter {
+export const getOperationRequestBody = (openApi: OpenApi, body: OpenApiRequestBody): OperationParameter => {
     const requestBody: OperationParameter = {
         in: 'body',
-        prop: 'body',
         export: 'interface',
+        prop: 'requestBody',
         name: 'requestBody',
         type: 'any',
         base: 'any',
         template: null,
         link: null,
-        description: getComment(parameter.description),
+        description: body.description || null,
         default: undefined,
         isDefinition: false,
         isReadOnly: false,
-        isRequired: parameter.required === true,
-        isNullable: parameter.nullable === true,
+        isRequired: body.required === true,
+        isNullable: body.nullable === true,
         imports: [],
         enum: [],
         enums: [],
@@ -31,12 +29,20 @@ export function getOperationRequestBody(openApi: OpenApi, parameter: OpenApiRequ
         mediaType: null,
     };
 
-    if (parameter.content) {
-        const schema = getContent(openApi, parameter.content);
-        if (schema) {
-            requestBody.mediaType = getMediaType(openApi, parameter.content);
-            if (schema?.$ref) {
-                const model = getType(schema.$ref);
+    if (body.content) {
+        const content = getContent(openApi, body.content);
+        if (content) {
+            requestBody.mediaType = content.mediaType;
+            switch (requestBody.mediaType) {
+                case 'application/x-www-form-urlencoded':
+                case 'multipart/form-data':
+                    requestBody.in = 'formData';
+                    requestBody.name = 'formData';
+                    requestBody.prop = 'formData';
+                    break;
+            }
+            if (content.schema.$ref) {
+                const model = getType(content.schema.$ref);
                 requestBody.export = 'reference';
                 requestBody.type = model.type;
                 requestBody.base = model.base;
@@ -44,7 +50,7 @@ export function getOperationRequestBody(openApi: OpenApi, parameter: OpenApiRequ
                 requestBody.imports.push(...model.imports);
                 return requestBody;
             } else {
-                const model = getModel(openApi, schema);
+                const model = getModel(openApi, content.schema);
                 requestBody.export = model.export;
                 requestBody.type = model.type;
                 requestBody.base = model.base;
@@ -77,4 +83,4 @@ export function getOperationRequestBody(openApi: OpenApi, parameter: OpenApiRequ
     }
 
     return requestBody;
-}
+};

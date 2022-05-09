@@ -3,14 +3,17 @@ import { getPattern } from '../../../utils/getPattern';
 import type { OpenApi } from '../interfaces/OpenApi';
 import type { OpenApiSchema } from '../interfaces/OpenApiSchema';
 import { extendEnum } from './extendEnum';
-import { getComment } from './getComment';
 import { getEnum } from './getEnum';
-import { getEnumFromDescription } from './getEnumFromDescription';
 import { getModelComposition } from './getModelComposition';
 import { getModelProperties } from './getModelProperties';
 import { getType } from './getType';
 
-export function getModel(openApi: OpenApi, definition: OpenApiSchema, isDefinition: boolean = false, name: string = ''): Model {
+export const getModel = (
+    openApi: OpenApi,
+    definition: OpenApiSchema,
+    isDefinition: boolean = false,
+    name: string = ''
+): Model => {
     const model: Model = {
         name,
         export: 'interface',
@@ -18,11 +21,11 @@ export function getModel(openApi: OpenApi, definition: OpenApiSchema, isDefiniti
         base: 'any',
         template: null,
         link: null,
-        description: getComment(definition.description),
+        description: definition.description || null,
         isDefinition,
         isReadOnly: definition.readOnly === true,
         isNullable: definition['x-nullable'] === true,
-        isRequired: definition.default !== undefined,
+        isRequired: false,
         format: definition.format,
         maximum: definition.maximum,
         exclusiveMaximum: definition.exclusiveMaximum,
@@ -61,17 +64,6 @@ export function getModel(openApi: OpenApi, definition: OpenApiSchema, isDefiniti
             model.type = 'string';
             model.base = 'string';
             model.enum.push(...extendedEnumerators);
-            return model;
-        }
-    }
-
-    if ((definition.type === 'int' || definition.type === 'integer') && definition.description) {
-        const enumerators = getEnumFromDescription(definition.description);
-        if (enumerators.length) {
-            model.export = 'enum';
-            model.type = 'number';
-            model.base = 'number';
-            model.enum.push(...enumerators);
             return model;
         }
     }
@@ -133,13 +125,13 @@ export function getModel(openApi: OpenApi, definition: OpenApiSchema, isDefiniti
         model.base = 'any';
 
         if (definition.properties) {
-            const properties = getModelProperties(openApi, definition, getModel);
-            properties.forEach(property => {
-                model.imports.push(...property.imports);
-                model.enums.push(...property.enums);
-                model.properties.push(property);
-                if (property.export === 'enum') {
-                    model.enums.push(property);
+            const modelProperties = getModelProperties(openApi, definition, getModel);
+            modelProperties.forEach(modelProperty => {
+                model.imports.push(...modelProperty.imports);
+                model.enums.push(...modelProperty.enums);
+                model.properties.push(modelProperty);
+                if (modelProperty.export === 'enum') {
+                    model.enums.push(modelProperty);
                 }
             });
         }
@@ -148,7 +140,7 @@ export function getModel(openApi: OpenApi, definition: OpenApiSchema, isDefiniti
 
     // If the schema has a type than it can be a basic or generic type.
     if (definition.type) {
-        const definitionType = getType(definition.type);
+        const definitionType = getType(definition.type, definition.format);
         model.export = 'generic';
         model.type = definitionType.type;
         model.base = definitionType.base;
@@ -158,4 +150,4 @@ export function getModel(openApi: OpenApi, definition: OpenApiSchema, isDefiniti
     }
 
     return model;
-}
+};

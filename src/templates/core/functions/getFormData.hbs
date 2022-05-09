@@ -1,10 +1,26 @@
-function getFormData(params: Record<string, any>): FormData {
-    const formData = new FormData();
-    Object.keys(params).forEach(key => {
-        const value = params[key];
-        if (isDefined(value)) {
-            formData.append(key, value);
-        }
-    });
-    return formData;
-}
+const getFormData = (options: ApiRequestOptions): FormData | undefined => {
+	if (options.formData) {
+		const formData = new FormData();
+
+		const process = (key: string, value: any) => {
+			if (isString(value) || isBlob(value)) {
+				formData.append(key, value);
+			} else {
+				formData.append(key, JSON.stringify(value));
+			}
+		};
+
+		Object.entries(options.formData)
+			.filter(([_, value]) => isDefined(value))
+			.forEach(([key, value]) => {
+				if (Array.isArray(value)) {
+					value.forEach(v => process(key, v));
+				} else {
+					process(key, value);
+				}
+			});
+
+		return formData;
+	}
+	return undefined;
+};

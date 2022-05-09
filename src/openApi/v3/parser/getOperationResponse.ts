@@ -2,17 +2,22 @@ import type { OperationResponse } from '../../../client/interfaces/OperationResp
 import { getPattern } from '../../../utils/getPattern';
 import type { OpenApi } from '../interfaces/OpenApi';
 import type { OpenApiResponse } from '../interfaces/OpenApiResponse';
-import { getComment } from './getComment';
+import type { OpenApiSchema } from '../interfaces/OpenApiSchema';
 import { getContent } from './getContent';
 import { getModel } from './getModel';
+import { getRef } from './getRef';
 import { getType } from './getType';
 
-export function getOperationResponse(openApi: OpenApi, response: OpenApiResponse, responseCode: number): OperationResponse {
+export const getOperationResponse = (
+    openApi: OpenApi,
+    response: OpenApiResponse,
+    responseCode: number
+): OperationResponse => {
     const operationResponse: OperationResponse = {
         in: 'response',
         name: '',
         code: responseCode,
-        description: getComment(response.description)!,
+        description: response.description || null,
         export: 'generic',
         type: 'any',
         base: 'any',
@@ -29,10 +34,13 @@ export function getOperationResponse(openApi: OpenApi, response: OpenApiResponse
     };
 
     if (response.content) {
-        const schema = getContent(openApi, response.content);
-        if (schema) {
-            if (schema?.$ref) {
-                const model = getType(schema.$ref);
+        const content = getContent(openApi, response.content);
+        if (content) {
+            if (content.schema.$ref?.startsWith('#/components/responses/')) {
+                content.schema = getRef<OpenApiSchema>(openApi, content.schema);
+            }
+            if (content.schema.$ref) {
+                const model = getType(content.schema.$ref);
                 operationResponse.export = 'reference';
                 operationResponse.type = model.type;
                 operationResponse.base = model.base;
@@ -40,7 +48,7 @@ export function getOperationResponse(openApi: OpenApi, response: OpenApiResponse
                 operationResponse.imports.push(...model.imports);
                 return operationResponse;
             } else {
-                const model = getModel(openApi, schema);
+                const model = getModel(openApi, content.schema);
                 operationResponse.export = model.export;
                 operationResponse.type = model.type;
                 operationResponse.base = model.base;
@@ -87,4 +95,4 @@ export function getOperationResponse(openApi: OpenApi, response: OpenApiResponse
     }
 
     return operationResponse;
-}
+};

@@ -1,13 +1,26 @@
-async function sendRequest(options: ApiRequestOptions, url: string): Promise<Response> {
-    const request: RequestInit = {
-        method: options.method,
-        headers: await getHeaders(options),
-        body: getRequestBody(options),
-    };
-    if (OpenAPI.WITH_CREDENTIALS) {
-        request.credentials = 'include';
-    }
+export const sendRequest = async (
+	config: OpenAPIConfig,
+	options: ApiRequestOptions,
+	url: string,
+	body: any,
+	formData: FormData | undefined,
+	headers: Headers,
+	onCancel: OnCancel
+): Promise<Response> => {
+	const controller = new AbortController();
 
-    let fetchFn = options.fetch ?? fetch;
-    return await fetchFn(url, request);
-}
+	const request: RequestInit = {
+		headers,
+		body: body ?? formData,
+		method: options.method,
+		signal: controller.signal,
+	};
+
+	if (config.WITH_CREDENTIALS) {
+		request.credentials = config.CREDENTIALS;
+	}
+
+	onCancel(() => controller.abort());
+
+	return await fetch(url, request);
+};

@@ -1,18 +1,26 @@
 {{>header}}
-{{#if @root.exportCore}}
 
+{{#if @root.exportClient}}
+export { {{{clientName}}} } from './{{{clientName}}}';
+
+{{/if}}
+{{#if @root.exportCore}}
 export { ApiError } from './core/ApiError';
+{{#if @root.exportClient}}
+export { BaseHttpRequest } from './core/BaseHttpRequest';
+{{/if}}
+export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
-export type { Fetch } from './fetch';
+export type { OpenAPIConfig } from './core/OpenAPI';
 {{/if}}
 {{#if @root.exportModels}}
 {{#if models}}
 
 {{#each models}}
-{{#if enum}}
-export { {{{name}}} } from './models/{{{name}}}';
-{{else if @root.useUnionTypes}}
+{{#if @root.useUnionTypes}}
 export type { {{{name}}} } from './models/{{{name}}}';
+{{else if enum}}
+export { {{{name}}} } from './models/{{{name}}}';
 {{else if enums}}
 export { {{{name}}} } from './models/{{{name}}}';
 {{else}}
@@ -33,8 +41,7 @@ export { ${{{name}}} } from './schemas/${{{name}}}';
 {{#if services}}
 
 {{#each services}}
-export { {{{name}}} } from './services/{{{name}}}';
-export type { I{{{name}}} } from './services/{{{name}}}';
+export { {{{name}}}{{{@root.postfix}}} } from './services/{{{name}}}{{{@root.postfix}}}';
 {{/each}}
 {{/if}}
 {{/if}}

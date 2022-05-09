@@ -1,7 +1,8 @@
 import type { Model } from '../client/interfaces/Model';
 import { HttpClient } from '../HttpClient';
+import { Indent } from '../Indent';
 import { writeFile } from './fileSystem';
-import { Templates } from './registerHandlebarTemplates';
+import type { Templates } from './registerHandlebarTemplates';
 import { writeClientSchemas } from './writeClientSchemas';
 
 jest.mock('./fileSystem');
@@ -11,9 +12,9 @@ describe('writeClientSchemas', () => {
         const models: Model[] = [
             {
                 export: 'interface',
-                name: 'MyModel',
-                type: 'MyModel',
-                base: 'MyModel',
+                name: 'User',
+                type: 'User',
+                base: 'User',
                 template: null,
                 link: null,
                 description: null,
@@ -30,6 +31,7 @@ describe('writeClientSchemas', () => {
 
         const templates: Templates = {
             index: () => 'index',
+            client: () => 'client',
             exports: {
                 model: () => 'model',
                 schema: () => 'schema',
@@ -40,12 +42,15 @@ describe('writeClientSchemas', () => {
                 apiError: () => 'apiError',
                 apiRequestOptions: () => 'apiRequestOptions',
                 apiResult: () => 'apiResult',
+                cancelablePromise: () => 'cancelablePromise',
                 request: () => 'request',
+                baseHttpRequest: () => 'baseHttpRequest',
+                httpRequest: () => 'httpRequest',
             },
         };
 
-        await writeClientSchemas(models, templates, '/', HttpClient.FETCH, false);
+        await writeClientSchemas(models, templates, '/', HttpClient.FETCH, false, Indent.SPACE_4);
 
-        expect(writeFile).toBeCalledWith('/$MyModel.ts', 'schema');
+        expect(writeFile).toBeCalledWith('/$User.ts', 'schema');
     });
 });

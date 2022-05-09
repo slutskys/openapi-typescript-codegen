@@ -10,6 +10,12 @@
         "http"
     ],
     "paths": {
+        "/api/v{api-version}/no-tag": {
+            "tags": [],
+            "get": {
+                "operationId": "ServiceWithEmptyTag"
+            }
+        },
         "/api/v{api-version}/simple": {
             "get": {
                 "tags": [
@@ -54,8 +60,54 @@
                 "operationId": "PatchCallWithoutParametersAndResponse"
             }
         },
+        "/api/v{api-version}/descriptions/": {
+            "post": {
+                "tags": [
+                    "Descriptions"
+                ],
+                "operationId": "CallWithDescriptions",
+                "parameters": [
+                    {
+                        "description": "Testing multiline comments in string: First line\nSecond line\n\nFourth line",
+                        "name": "parameterWithBreaks",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "description": "Testing backticks in string: `backticks` and ```multiple backticks``` should work",
+                        "name": "parameterWithBackticks",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "description": "Testing slashes in string: \\backwards\\\\\\ and /forwards/// should work",
+                        "name": "parameterWithSlashes",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "description": "Testing expression placeholders in string: ${expression} should work",
+                        "name": "parameterWithExpressionPlaceholders",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "description": "Testing quotes in string: 'single quote''' and \"double quotes\"\"\" should work",
+                        "name": "parameterWithQuotes",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "description": "Testing reserved characters in string: /* inline */ and /** inline **/ should work",
+                        "name": "parameterWithReservedCharacters",
+                        "in": "query",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
         "/api/v{api-version}/parameters/{parameterPath}": {
-            "get": {
+            "post": {
                 "tags": [
                     "Parameters"
                 ],
@@ -83,7 +135,7 @@
                         "required": true
                     },
                     {
-                        "description": "This is the parameter that is send as request body",
+                        "description": "This is the parameter that is sent as request body",
                         "name": "parameterBody",
                         "in": "body",
                         "type": "string",
@@ -106,7 +158,7 @@
             }
         },
         "/api/v{api-version}/parameters/{parameter.path.1}/{parameter-path-2}/{PARAMETER-PATH-3}": {
-            "get": {
+            "post": {
                 "tags": [
                     "Parameters"
                 ],
@@ -162,7 +214,7 @@
                         "required": true
                     },
                     {
-                        "description": "This is the parameter that is send as request body",
+                        "description": "This is the parameter that is sent as request body",
                         "name": "PARAMETER-BODY",
                         "in": "body",
                         "type": "string",
@@ -340,6 +392,23 @@
                         "in": "query",
                         "required": true,
                         "type": "string"
+                    },
+                    {
+                        "x-nullable": true,
+                        "description": "This is a string that can be null with no default",
+                        "name": "parameterStringNullableWithNoDefault",
+                        "in": "query",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "x-nullable": true,
+                        "description": "This is a string that can be null with default",
+                        "name": "parameterStringNullableWithDefault",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "default": null
                     }
                 ]
             }
@@ -347,24 +416,28 @@
         "/api/v{api-version}/duplicate": {
             "get": {
                 "tags": [
+                    "Duplicate",
                     "Duplicate"
                 ],
                 "operationId": "DuplicateName"
             },
             "post": {
                 "tags": [
+                    "Duplicate",
                     "Duplicate"
                 ],
                 "operationId": "DuplicateName"
             },
             "put": {
                 "tags": [
+                    "Duplicate",
                     "Duplicate"
                 ],
                 "operationId": "DuplicateName"
             },
             "delete": {
                 "tags": [
+                    "Duplicate",
                     "Duplicate"
                 ],
                 "operationId": "DuplicateName"
@@ -376,6 +449,35 @@
                     "NoContent"
                 ],
                 "operationId": "CallWithNoContentResponse",
+                "responses": {
+                    "204": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/api/v{api-version}/multiple-tags/a": {
+            "get": {
+                "tags": [
+                    "MultipleTags1",
+                    "MultipleTags2"
+                ],
+                "operationId": "DummyA",
+                "responses": {
+                    "204": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/api/v{api-version}/multiple-tags/b": {
+            "get": {
+                "tags": [
+                    "MultipleTags1",
+                    "MultipleTags2",
+                    "MultipleTags3"
+                ],
+                "operationId": "DummyB",
                 "responses": {
                     "204": {
                         "description": "Success"
@@ -518,7 +620,7 @@
                 "operationId": "CollectionFormat",
                 "parameters": [
                     {
-                        "description": "This is an array parameter that is send as csv format (comma-separated values)",
+                        "description": "This is an array parameter that is sent as csv format (comma-separated values)",
                         "name": "parameterArrayCSV",
                         "in": "query",
                         "required": true,
@@ -529,7 +631,7 @@
                         "collectionFormat": "csv"
                     },
                     {
-                        "description": "This is an array parameter that is send as ssv format (space-separated values)",
+                        "description": "This is an array parameter that is sent as ssv format (space-separated values)",
                         "name": "parameterArraySSV",
                         "in": "query",
                         "required": true,
@@ -540,7 +642,7 @@
                         "collectionFormat": "ssv"
                     },
                     {
-                        "description": "This is an array parameter that is send as tsv format (tab-separated values)",
+                        "description": "This is an array parameter that is sent as tsv format (tab-separated values)",
                         "name": "parameterArrayTSV",
                         "in": "query",
                         "required": true,
@@ -551,7 +653,7 @@
                         "collectionFormat": "tsv"
                     },
                     {
-                        "description": "This is an array parameter that is send as pipes format (pipe-separated values)",
+                        "description": "This is an array parameter that is sent as pipes format (pipe-separated values)",
                         "name": "parameterArrayPipes",
                         "in": "query",
                         "required": true,
@@ -562,7 +664,7 @@
                         "collectionFormat": "pipes"
                     },
                     {
-                        "description": "This is an array parameter that is send as multi format (multiple parameter instances)",
+                        "description": "This is an array parameter that is sent as multi format (multiple parameter instances)",
                         "name": "parameterArrayMulti",
                         "in": "query",
                         "required": true,
@@ -588,7 +690,7 @@
                         "in": "query",
                         "required": true,
                         "default": 123,
-                        "type": "int"
+                        "type": "number"
                     },
                     {
                         "description": "This is a string parameter",
@@ -769,11 +871,65 @@
                     }
                 }
             }
+        },
+        "/api/v{api-version}/error": {
+            "post": {
+                "tags": [
+                    "Error"
+                ],
+                "operationId": "testErrorCode",
+                "parameters": [
+                    {
+                        "description": "Status code to return",
+                        "name": "status",
+                        "in": "query",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Custom message: Successful response"
+                    },
+                    "500": {
+                        "description": "Custom message: Internal Server Error"
+                    },
+                    "501": {
+                        "description": "Custom message: Not Implemented"
+                    },
+                    "502": {
+                        "description": "Custom message: Bad Gateway"
+                    },
+                    "503": {
+                        "description": "Custom message: Service Unavailable"
+                    }
+                }
+            }
         }
     },
     "definitions": {
-        "MultilineComment": {
-            "description": "Testing multiline comments.\nThis must go to the next line.\n\nThis will contain a break.",
+        "CommentWithBreaks": {
+            "description": "Testing multiline comments in string: First line\nSecond line\n\nFourth line",
+            "type": "integer"
+        },
+        "CommentWithBackticks": {
+            "description": "Testing backticks in string: `backticks` and ```multiple backticks``` should work",
+            "type": "integer"
+        },
+        "CommentWithSlashes": {
+            "description": "Testing slashes in string: \\backwards\\\\\\ and /forwards/// should work",
+            "type": "integer"
+        },
+        "CommentWithExpressionPlaceholders": {
+            "description": "Testing expression placeholders in string: ${expression} should work",
+            "type": "integer"
+        },
+        "CommentWithQuotes": {
+            "description": "Testing quotes in string: 'single quote''' and \"double quotes\"\"\" should work",
+            "type": "integer"
+        },
+        "CommentWithReservedCharacters": {
+            "description": "Testing reserved characters in string: /* inline */ and /** inline **/ should work",
             "type": "integer"
         },
         "SimpleInteger": {
@@ -807,7 +963,9 @@
             "enum": [
                 "Success",
                 "Warning",
-                "Error"
+                "Error",
+                "'Single Quote'",
+                "\"Double Quotes\""
             ]
         },
         "EnumWithNumbers": {
@@ -832,7 +990,7 @@
         },
         "EnumFromDescription": {
             "description": "Success=1,Warning=2,Error=3",
-            "type": "int"
+            "type": "number"
         },
         "EnumWithExtensions": {
             "description": "This is a simple enum with numbers",
@@ -1117,7 +1275,7 @@
                 "propWithNumber": {
                     "type": "array",
                     "items": {
-                        "type": "int"
+                        "type": "number"
                     }
                 }
             }

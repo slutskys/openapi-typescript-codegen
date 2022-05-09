@@ -10,6 +10,12 @@
         }
     ],
     "paths": {
+        "/api/v{api-version}/no-tag": {
+            "tags": [],
+            "get": {
+                "operationId": "ServiceWithEmptyTag"
+            }
+        },
         "/api/v{api-version}/simple": {
             "get": {
                 "tags": [
@@ -54,8 +60,54 @@
                 "operationId": "PatchCallWithoutParametersAndResponse"
             }
         },
+        "/api/v{api-version}/descriptions/": {
+            "post": {
+                "tags": [
+                    "Descriptions"
+                ],
+                "operationId": "CallWithDescriptions",
+                "parameters": [
+                    {
+                        "description": "Testing multiline comments in string: First line\nSecond line\n\nFourth line",
+                        "name": "parameterWithBreaks",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "description": "Testing backticks in string: `backticks` and ```multiple backticks``` should work",
+                        "name": "parameterWithBackticks",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "description": "Testing slashes in string: \\backwards\\\\\\ and /forwards/// should work",
+                        "name": "parameterWithSlashes",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "description": "Testing expression placeholders in string: ${expression} should work",
+                        "name": "parameterWithExpressionPlaceholders",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "description": "Testing quotes in string: 'single quote''' and \"double quotes\"\"\" should work",
+                        "name": "parameterWithQuotes",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "description": "Testing reserved characters in string: /* inline */ and /** inline **/ should work",
+                        "name": "parameterWithReservedCharacters",
+                        "in": "query",
+                        "type": "string"
+                    }
+                ]
+            }
+        },
         "/api/v{api-version}/parameters/{parameterPath}": {
-            "get": {
+            "post": {
                 "tags": [
                     "Parameters"
                 ],
@@ -127,7 +179,6 @@
                     "nullable": true,
                     "content": {
                         "application/json": {
-                            "description": "Message for default response",
                             "schema": {
                                 "$ref": "#/components/schemas/ModelWithString"
                             }
@@ -137,7 +188,7 @@
             }
         },
         "/api/v{api-version}/parameters/{parameter.path.1}/{parameter-path-2}/{PARAMETER-PATH-3}": {
-            "get": {
+            "post": {
                 "tags": [
                     "Parameters"
                 ],
@@ -239,7 +290,6 @@
                     "nullable": true,
                     "content": {
                         "application/json": {
-                            "description": "Message for default response",
                             "schema": {
                                 "$ref": "#/components/schemas/ModelWithString"
                             }
@@ -270,7 +320,6 @@
                     "required": true,
                     "content": {
                         "application/json": {
-                            "description": "Message for default response",
                             "schema": {
                                 "$ref": "#/components/schemas/ModelWithString"
                             }
@@ -290,7 +339,7 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/components/schemas/Pageable"
                         }
                     }
                 ],
@@ -299,7 +348,6 @@
                     "required": false,
                     "content": {
                         "application/json": {
-                            "description": "Message for default response",
                             "schema": {
                                 "$ref": "#/components/schemas/ModelWithString"
                             }
@@ -313,8 +361,28 @@
                 "tags": [
                     "RequestBody"
                 ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/SimpleParameter"
+                    }
+                ],
                 "requestBody": {
                     "$ref": "#/components/requestBodies/SimpleRequestBody"
+                }
+            }
+        },
+        "/api/v{api-version}/formData/": {
+            "post": {
+                "tags": [
+                    "FormData"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/SimpleParameter"
+                    }
+                ],
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/SimpleFormData"
                 }
             }
         },
@@ -509,6 +577,27 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "description": "This is a string that can be null with no default",
+                        "name": "parameterStringNullableWithNoDefault",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "nullable": true
+                        }
+                    },
+                    {
+                        "description": "This is a string that can be null with default",
+                        "name": "parameterStringNullableWithDefault",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "nullable": true,
+                            "default": null
+                        }
                     }
                 ]
             }
@@ -552,6 +641,35 @@
                 }
             }
         },
+        "/api/v{api-version}/multiple-tags/a": {
+            "get": {
+                "tags": [
+                    "MultipleTags1",
+                    "MultipleTags2"
+                ],
+                "operationId": "DummyA",
+                "responses": {
+                    "204": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/api/v{api-version}/multiple-tags/b": {
+            "get": {
+                "tags": [
+                    "MultipleTags1",
+                    "MultipleTags2",
+                    "MultipleTags3"
+                ],
+                "operationId": "DummyB",
+                "responses": {
+                    "204": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
         "/api/v{api-version}/response": {
             "get": {
                 "tags": [
@@ -562,7 +680,6 @@
                     "default": {
                         "content": {
                             "application/json": {
-                                "description": "Message for default response",
                                 "schema": {
                                     "$ref": "#/components/schemas/ModelWithString"
                                 }
@@ -743,7 +860,7 @@
                 "operationId": "CollectionFormat",
                 "parameters": [
                     {
-                        "description": "This is an array parameter that is send as csv format (comma-separated values)",
+                        "description": "This is an array parameter that is sent as csv format (comma-separated values)",
                         "name": "parameterArrayCSV",
                         "in": "query",
                         "required": true,
@@ -757,7 +874,7 @@
                         "collectionFormat": "csv"
                     },
                     {
-                        "description": "This is an array parameter that is send as ssv format (space-separated values)",
+                        "description": "This is an array parameter that is sent as ssv format (space-separated values)",
                         "name": "parameterArraySSV",
                         "in": "query",
                         "required": true,
@@ -771,7 +888,7 @@
                         "collectionFormat": "ssv"
                     },
                     {
-                        "description": "This is an array parameter that is send as tsv format (tab-separated values)",
+                        "description": "This is an array parameter that is sent as tsv format (tab-separated values)",
                         "name": "parameterArrayTSV",
                         "in": "query",
                         "required": true,
@@ -785,7 +902,7 @@
                         "collectionFormat": "tsv"
                     },
                     {
-                        "description": "This is an array parameter that is send as pipes format (pipe-separated values)",
+                        "description": "This is an array parameter that is sent as pipes format (pipe-separated values)",
                         "name": "parameterArrayPipes",
                         "in": "query",
                         "required": true,
@@ -799,7 +916,7 @@
                         "collectionFormat": "pipes"
                     },
                     {
-                        "description": "This is an array parameter that is send as multi format (multiple parameter instances)",
+                        "description": "This is an array parameter that is sent as multi format (multiple parameter instances)",
                         "name": "parameterArrayMulti",
                         "in": "query",
                         "required": true,
@@ -828,7 +945,7 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "int",
+                            "type": "number",
                             "default": 123
                         }
                     },
@@ -837,10 +954,10 @@
                         "name": "parameterString",
                         "in": "query",
                         "required": true,
-                        "nullable": true,
                         "schema": {
                             "type": "string",
-                            "default": "default"
+                            "default": "default",
+                            "nullable": true
                         }
                     },
                     {
@@ -848,10 +965,10 @@
                         "name": "parameterBoolean",
                         "in": "query",
                         "required": true,
-                        "nullable": true,
                         "schema": {
                             "type": "boolean",
-                            "default": true
+                            "default": true,
+                            "nullable": true
                         }
                     },
                     {
@@ -859,10 +976,10 @@
                         "name": "parameterObject",
                         "in": "query",
                         "required": true,
-                        "nullable": true,
                         "schema": {
                             "type": "object",
-                            "default": null
+                            "default": null,
+                            "nullable": true
                         }
                     },
                     {
@@ -870,12 +987,12 @@
                         "name": "parameterArray",
                         "in": "query",
                         "required": true,
-                        "nullable": true,
                         "schema": {
                             "type": "array",
                             "items": {
                                 "type": "string"
-                            }
+                            },
+                            "nullable": true
                         }
                     },
                     {
@@ -883,12 +1000,12 @@
                         "name": "parameterDictionary",
                         "in": "query",
                         "required": true,
-                        "nullable": true,
                         "schema": {
                             "type": "object",
                             "items": {
                                 "type": "string"
-                            }
+                            },
+                            "nullable": true
                         }
                     },
                     {
@@ -896,13 +1013,13 @@
                         "name": "parameterEnum",
                         "in": "query",
                         "required": true,
-                        "nullable": true,
                         "schema": {
                             "enum": [
                                 "Success",
                                 "Warning",
                                 "Error"
-                            ]
+                            ],
+                            "nullable": true
                         }
                     },
                     {
@@ -972,16 +1089,16 @@
                         "in": "formData",
                         "required": true,
                         "schema": {
-                            "type": "File"
+                            "type": "file"
                         }
                     },
                     {
                         "name": "api-version",
                         "in": "path",
                         "required": true,
-                        "nullable": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "nullable": true
                         }
                     }
                 ],
@@ -1063,6 +1180,43 @@
             }
         },
         "/api/v{api-version}/multipart": {
+            "post": {
+                "tags": [
+                    "multipart"
+                ],
+                "operationId": "MultipartRequest",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "content": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "data": {
+                                        "oneOf": [
+                                            {
+                                                "$ref": "#/components/schemas/ModelWithString"
+                                            }
+                                        ],
+                                        "nullable": true
+                                    }
+                                }
+                            },
+                            "encoding": {
+                                "content": {
+                                    "style": "form"
+                                },
+                                "data": {
+                                    "style": "form"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "get": {
                 "tags": [
                     "multipart"
@@ -1217,7 +1371,7 @@
                     "200": {
                         "description": "Success",
                         "content": {
-                            "application/json": {
+                            "application/json; type=collection": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ModelWithString"
                                 }
@@ -1252,6 +1406,42 @@
                     }
                 }
             }
+        },
+        "/api/v{api-version}/error": {
+            "post": {
+                "tags": [
+                    "Error"
+                ],
+                "operationId": "testErrorCode",
+                "parameters": [
+                    {
+                        "description": "Status code to return",
+                        "name": "status",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Custom message: Successful response"
+                    },
+                    "500": {
+                        "description": "Custom message: Internal Server Error"
+                    },
+                    "501": {
+                        "description": "Custom message: Not Implemented"
+                    },
+                    "502": {
+                        "description": "Custom message: Bad Gateway"
+                    },
+                    "503": {
+                        "description": "Custom message: Service Unavailable"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1261,7 +1451,17 @@
                 "required": false,
                 "content": {
                     "application/json": {
-                        "description": "Message for default response",
+                        "schema": {
+                            "$ref": "#/components/schemas/ModelWithString"
+                        }
+                    }
+                }
+            },
+            "SimpleFormData": {
+                "description": "A reusable request body",
+                "required": false,
+                "content": {
+                    "multipart/form-data": {
                         "schema": {
                             "$ref": "#/components/schemas/ModelWithString"
                         }
@@ -1269,9 +1469,40 @@
                 }
             }
         },
+        "parameters": {
+            "SimpleParameter": {
+                "description": "This is a reusable parameter",
+                "name": "parameter",
+                "in": "query",
+                "required": false,
+                "schema": {
+                    "type": "string"
+                }
+            }
+        },
         "schemas": {
-            "MultilineComment": {
-                "description": "Testing multiline comments.\nThis must go to the next line.\n\nThis will contain a break.",
+            "CommentWithBreaks": {
+                "description": "Testing multiline comments in string: First line\nSecond line\n\nFourth line",
+                "type": "integer"
+            },
+            "CommentWithBackticks": {
+                "description": "Testing backticks in string: `backticks` and ```multiple backticks``` should work",
+                "type": "integer"
+            },
+            "CommentWithSlashes": {
+                "description": "Testing slashes in string: \\backwards\\\\\\ and /forwards/// should work",
+                "type": "integer"
+            },
+            "CommentWithExpressionPlaceholders": {
+                "description": "Testing expression placeholders in string: ${expression} should work",
+                "type": "integer"
+            },
+            "CommentWithQuotes": {
+                "description": "Testing quotes in string: 'single quote''' and \"double quotes\"\"\" should work",
+                "type": "integer"
+            },
+            "CommentWithReservedCharacters": {
+                "description": "Testing reserved characters in string: /* inline */ and /** inline **/ should work",
                 "type": "integer"
             },
             "SimpleInteger": {
@@ -1288,7 +1519,7 @@
             },
             "SimpleFile": {
                 "description": "This is a simple file",
-                "type": "File"
+                "type": "file"
             },
             "SimpleReference": {
                 "description": "This is a simple reference",
@@ -1306,7 +1537,9 @@
                 "enum": [
                     "Success",
                     "Warning",
-                    "Error"
+                    "Error",
+                    "'Single Quote'",
+                    "\"Double Quotes\""
                 ]
             },
             "EnumWithNumbers": {
@@ -1331,7 +1564,7 @@
             },
             "EnumFromDescription": {
                 "description": "Success=1,Warning=2,Error=3",
-                "type": "int"
+                "type": "number"
             },
             "EnumWithExtensions": {
                 "description": "This is a simple enum with numbers",
@@ -1483,6 +1716,40 @@
                     }
                 }
             },
+            "ModelWithNullableString": {
+                "description": "This is a model with one string property",
+                "type": "object",
+                "required": [
+                    "nullableRequiredProp1",
+                    "nullableRequiredProp2"
+                ],
+                "properties": {
+                    "nullableProp1": {
+                        "description": "This is a simple string property",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "nullableRequiredProp1": {
+                        "description": "This is a simple string property",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "nullableProp2": {
+                        "description": "This is a simple string property",
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "nullableRequiredProp2": {
+                        "description": "This is a simple string property",
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    }
+                }
+            },
             "ModelWithEnum": {
                 "description": "This is a model with one enum",
                 "type": "object",
@@ -1587,13 +1854,13 @@
                     "propWithFile": {
                         "type": "array",
                         "items": {
-                            "type": "File"
+                            "type": "file"
                         }
                     },
                     "propWithNumber": {
                         "type": "array",
                         "items": {
-                            "type": "int"
+                            "type": "number"
                         }
                     }
                 }
@@ -1653,7 +1920,9 @@
                                 "description": "Anonymous object type",
                                 "type": "object",
                                 "properties": {
-                                    "propA": "string"
+                                    "propA": {
+                                        "type": "string"
+                                    }
                                 }
                             },
                             {
@@ -1665,6 +1934,55 @@
                                 "type": "integer"
                             }
                         ]
+                    }
+                }
+            },
+            "ModelCircle": {
+                "description": "Circle",
+                "type": "object",
+                "required": [
+                    "kind"
+                ],
+                "properties": {
+                    "kind": {
+                        "type": "string"
+                    },
+                    "radius": {
+                        "type": "number"
+                    }
+                }
+            },
+            "ModelSquare": {
+                "description": "Square",
+                "type": "object",
+                "required": [
+                    "kind"
+                ],
+                "properties": {
+                    "kind": {
+                        "type": "string"
+                    },
+                    "sideLength": {
+                        "type": "number"
+                    }
+                }
+            },
+            "CompositionWithOneOfDiscriminator": {
+                "description": "This is a model with one property with a 'one of' relationship where the options are not $ref",
+                "type": "object",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/ModelCircle"
+                    },
+                    {
+                        "$ref": "#/components/schemas/ModelSquare"
+                    }
+                ],
+                "discriminator": {
+                    "propertyName": "kind",
+                    "mapping": {
+                        "circle": "#/components/schemas/ModelCircle",
+                        "square": "#/components/schemas/ModelSquare"
                     }
                 }
             },
@@ -1702,7 +2020,9 @@
                                 "description": "Anonymous object type",
                                 "type": "object",
                                 "properties": {
-                                    "propA": "string"
+                                    "propA": {
+                                        "type": "string"
+                                    }
                                 }
                             },
                             {
@@ -1741,6 +2061,76 @@
                             },
                             {
                                 "$ref": "#/components/schemas/ModelWithDictionary"
+                            }
+                        ]
+                    }
+                }
+            },
+            "CompositionWithOneOfAndSimpleDictionary": {
+                "description": "This is a model that contains a simple dictionary within composition",
+                "type": "object",
+                "properties": {
+                    "propA": {
+                        "oneOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "object",
+                                "additionalProperties": {
+                                    "type": "number"
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "CompositionWithOneOfAndSimpleArrayDictionary": {
+                "description": "This is a model that contains a dictionary of simple arrays within composition",
+                "type": "object",
+                "properties": {
+                    "propA": {
+                        "oneOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "object",
+                                "additionalProperties": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "boolean"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "CompositionWithOneOfAndComplexArrayDictionary": {
+                "description": "This is a model that contains a dictionary of complex arrays (composited) within composition",
+                "type": "object",
+                "properties": {
+                    "propA": {
+                        "oneOf": [
+                            {
+                                "type": "boolean"
+                            },
+                            {
+                                "type": "object",
+                                "additionalProperties": {
+                                    "type": "array",
+                                    "items": {
+                                        "oneOf": [
+                                            {
+                                                "type": "number"
+                                            },
+                                            {
+                                                "type": "string"
+                                            }
+                                        ]
+                                    }
+                                }
                             }
                         ]
                     }
@@ -1803,6 +2193,37 @@
                         ]
                     }
                 }
+            },
+            "CompositionBaseModel": {
+                "description": "This is a base model with two simple optional properties",
+                "type": "object",
+                "properties": {
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastname": {
+                        "type": "string"
+                    }
+                }
+            },
+            "CompositionExtendedModel": {
+                "description": "This is a model that extends the base model",
+                "type": "object",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/CompositionBaseModel"
+                    }
+                ],
+                "properties": {
+                    "age": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "firstName",
+                    "lastname",
+                    "age"
+                ]
             },
             "ModelWithProperties": {
                 "description": "This is a model with one nested property",
@@ -2011,6 +2432,65 @@
                     "text": {
                         "type": "string",
                         "pattern": "^\\w+$"
+                    }
+                }
+            },
+            "File": {
+                "required": [
+                    "mime"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "title": "Id",
+                        "type": "string",
+                        "readOnly": true,
+                        "minLength": 1
+                    },
+                    "updated_at": {
+                        "title": "Updated at",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "created_at": {
+                        "title": "Created at",
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "mime": {
+                        "title": "Mime",
+                        "type": "string",
+                        "maxLength": 24,
+                        "minLength": 1
+                    },
+                    "file": {
+                        "title": "File",
+                        "type": "string",
+                        "readOnly": true,
+                        "format": "uri"
+                    }
+                }
+            },
+            "Pageable": {
+                "type": "object",
+                "properties": {
+                    "page": {
+                        "minimum": 0,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "size": {
+                        "minimum": 1,
+                        "type": "integer",
+                        "format": "int32"
+                    },
+                    "sort": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
                     }
                 }
             }
