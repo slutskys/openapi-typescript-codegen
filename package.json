@@ -1,6 +1,6 @@
 {
     "name": "@slutskys/openapi-typescript-codegen",
-    "version": "0.22.0",
+    "version": "0.22.1",
     "description": "Library that generates Typescript clients based on the OpenAPI specification.",
     "author": "Quentin Fox",
     "repository": {
@@ -19,7 +19,7 @@
         "types/index.d.ts"
     ],
     "publishConfig": {
-      "registry": "https://npm.pkg.github.com"
+        "registry": "https://npm.pkg.github.com"
     },
     "scripts": {
         "clean": "rimraf ./dist ./test/generated ./test/e2e/generated ./samples/generated ./coverage ./node_modules/.cache",
@@ -100,11 +100,11 @@
         "zone.js": "0.11.5"
     },
     "peerDependencies": {
-      "prettier": "^=2.x"
+        "prettier": "^=2.x"
     },
     "peerDependenciesMeta": {
-      "prettier": {
-        "optional": true
-      }
+        "prettier": {
+            "optional": true
+        }
     }
 }
