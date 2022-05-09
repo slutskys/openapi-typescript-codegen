@@ -153,6 +153,6 @@ export class {{{name}}}{{{@root.postfix}}} {
 
 export interface I{{{name}}}{{{@root.postfix}}} {
     {{#each operations}}
-        {{{name}}}({{>parameters}}): CancelablePromise<{{>result}}>;
+        {{{name}}}({{>parameters}}): Promise<{{>result}}>;
     {{/each}}
 }
