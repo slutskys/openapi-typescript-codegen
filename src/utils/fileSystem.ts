@@ -7,7 +7,6 @@ import {
     writeFile as __writeFile,
 } from 'fs';
 import { promisify } from 'util';
-import prettier from 'prettier';
 
 // Wrapped file system calls
 
@@ -15,6 +14,29 @@ export const readFile = promisify(__readFile);
 const writeFileRaw = promisify(__writeFile);
 export const copyFile = promisify(__copyFile);
 export const exists = promisify(__exists);
+
+type WriteFile = typeof writeFileRaw;
+
+export const writeFile: WriteFile = async (path, data, options) => {
+    let formattedData: string | NodeJS.ArrayBufferView;
+
+    if (typeof data === 'string' && typeof path === 'string') {
+        try {
+            const prettier = require('prettier');
+            const prettierConfig = await prettier.resolveConfig(path);
+            formattedData = prettier.format(data, {
+                ...prettierConfig,
+                parser: 'typescript',
+            });
+        } catch (err) {
+            formattedData = data;
+        }
+    } else {
+        formattedData = data;
+    }
+
+    return await writeFileRaw(path, formattedData, options);
+};
 
 export const mkdir = (path: string): Promise<void> =>
     new Promise((resolve, reject) => {

@@ -530,6 +530,16 @@ export const request = <T>(config: OpenAPIConfig, options: ApiRequestOptions): C
 };"
 `;
 
+exports[`v2 should generate: ./test/generated/v2/fetch.ts 1`] = `
+"/* istanbul ignore file */
+/* tslint:disable */
+/* eslint-disable */
+export interface Fetch {
+    (input: RequestInfo, init?: RequestInit | undefined): Promise<Response>;
+}
+"
+`;
+
 exports[`v2 should generate: ./test/generated/v2/index.ts 1`] = `
 "/* istanbul ignore file */
 /* tslint:disable */
@@ -3468,6 +3478,16 @@ export const request = <T>(config: OpenAPIConfig, options: ApiRequestOptions): C
         }
     });
 };"
+`;
+
+exports[`v3 should generate: ./test/generated/v3/fetch.ts 1`] = `
+"/* istanbul ignore file */
+/* tslint:disable */
+/* eslint-disable */
+export interface Fetch {
+    (input: RequestInfo, init?: RequestInit | undefined): Promise<Response>;
+}
+"
 `;
 
 exports[`v3 should generate: ./test/generated/v3/index.ts 1`] = `

@@ -19,6 +19,7 @@ describe('writeClient', () => {
         const templates: Templates = {
             index: () => 'index',
             client: () => 'client',
+            fetch: () => 'fetch',
             exports: {
                 model: () => 'model',
                 schema: () => 'schema',

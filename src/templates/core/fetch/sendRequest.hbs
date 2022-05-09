@@ -22,5 +22,7 @@ export const sendRequest = async (
 
 	onCancel(() => controller.abort());
 
-	return await fetch(url, request);
+	const fetchFn = options.fetch ?? fetch;
+
+	return await fetchFn(url, request);
 };

@@ -8,6 +8,12 @@ export class ApiError extends Error {
 	public readonly statusText: string;
 	public readonly body: any;
 
+	static StatusBadRequest = 400 as const;
+	static StatusUnauthorized = 401 as const;
+	static StatusNotFound = 404 as const;
+	static StatusConflict = 409 as const;
+	static StatusInternalServerError = 500 as const;
+
 	constructor(response: ApiResult, message: string) {
 		super(message);
 

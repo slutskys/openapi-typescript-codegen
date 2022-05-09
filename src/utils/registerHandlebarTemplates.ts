@@ -89,6 +89,7 @@ import { registerHandlebarHelpers } from './registerHandlebarHelpers';
 export interface Templates {
     index: Handlebars.TemplateDelegate;
     client: Handlebars.TemplateDelegate;
+    fetch: Handlebars.TemplateDelegate;
     exports: {
         model: Handlebars.TemplateDelegate;
         schema: Handlebars.TemplateDelegate;
@@ -121,6 +122,7 @@ export const registerHandlebarTemplates = (root: {
     const templates: Templates = {
         index: Handlebars.template(templateIndex),
         client: Handlebars.template(templateClient),
+        fetch: Handlebars.template(templateFetch),
         exports: {
             model: Handlebars.template(templateExportModel),
             schema: Handlebars.template(templateExportSchema),

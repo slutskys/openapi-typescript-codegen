@@ -12,6 +12,7 @@ export { BaseHttpRequest } from './core/BaseHttpRequest';
 export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
+export type { Fetch } from './fetch';
 {{/if}}
 {{#if @root.exportModels}}
 {{#if models}}
@@ -42,6 +43,8 @@ export { ${{{name}}} } from './schemas/${{{name}}}';
 
 {{#each services}}
 export { {{{name}}}{{{@root.postfix}}} } from './services/{{{name}}}{{{@root.postfix}}}';
+export type { I{{{name}}}{{{@root.postfix}}} } from './services/{{{name}}}{{{@root.postfix}}}'
 {{/each}}
 {{/if}}
+
 {{/if}}

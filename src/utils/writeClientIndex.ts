@@ -50,4 +50,5 @@ export const writeClientIndex = async (
     });
 
     await writeFile(resolve(outputPath, 'index.ts'), templateResult);
+    await writeFile(resolve(outputPath, 'fetch.ts'), templates.fetch({}))
 };

@@ -1,5 +1,5 @@
 {
-    "name": "openapi-typescript-codegen",
+    "name": "@slutskys/openapi-typescript-codegen",
     "version": "0.22.0",
     "description": "Library that generates Typescript clients based on the OpenAPI specification.",
     "author": "Quentin Fox",
@@ -7,27 +7,8 @@
         "type": "git",
         "url": "git+https://github.com/slutskys/openapi-typescript-codegen.git"
     },
-    "license": "MIT",
-    "keywords": [
-        "openapi",
-        "swagger",
-        "generator",
-        "typescript",
-        "yaml",
-        "json",
-        "fetch",
-        "xhr",
-        "axios",
-        "angular",
-        "node"
-    ],
-    "maintainers": [
-        {
-            "name": "Ferdi Koomen",
-            "email": "info@madebyferdi.com"
-        }
-    ],
     "main": "dist/index.js",
+    "module": "dist/index.js",
     "types": "types/index.d.ts",
     "bin": {
         "openapi": "bin/index.js"
@@ -37,6 +18,9 @@
         "dist/index.js",
         "types/index.d.ts"
     ],
+    "publishConfig": {
+      "registry": "https://npm.pkg.github.com"
+    },
     "scripts": {
         "clean": "rimraf ./dist ./test/generated ./test/e2e/generated ./samples/generated ./coverage ./node_modules/.cache",
         "build": "rollup --config --environment NODE_ENV:development",
@@ -114,5 +98,13 @@
         "tslib": "2.4.0",
         "typescript": "4.6.3",
         "zone.js": "0.11.5"
+    },
+    "peerDependencies": {
+      "prettier": "^=2.x"
+    },
+    "peerDependenciesMeta": {
+      "prettier": {
+        "optional": true
+      }
     }
 }
