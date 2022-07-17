@@ -1,4 +1,5 @@
 import { EOL } from 'os';
+import { cwd } from 'process';
 
 export const formatCode = (s: string): string => {
     let indent: number = 0;
@@ -19,5 +20,17 @@ export const formatCode = (s: string): string => {
         }
         return result;
     });
-    return lines.join(EOL);
+    const raw = lines.join(EOL);
+
+    try {
+        const prettier = require('prettier');
+        // sync, so that this function doesn't have to return a promise
+        const prettierConfig = prettier.resolveConifg.sync(cwd());
+        return prettier.format(raw, {
+            ...(prettierConfig ?? {}),
+            parser: 'typescript',
+        });
+    } catch (err) {
+        return raw;
+    }
 };
